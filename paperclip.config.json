@@ -8,10 +8,24 @@
     "operational_logic": [
       "identify_gap",
       "technical_blueprint",
+      "wait_for_approval",
       "circular_agent_build",
       "unit_test_gate",
+      "wait_for_approval",
       "deployment"
-    ]
+    ],
+    "states": {
+      "wait_for_approval": {
+        "description": "Pauses the build pipeline and pings the operator via messaging bridge for manual approval before proceeding",
+        "action": "wait_for_approval",
+        "notify_via": "messaging_bridge",
+        "timeout_hours": 24,
+        "on_timeout": "reject",
+        "on_approve": "continue",
+        "on_reject": "halt",
+        "triggers_after": ["technical_blueprint", "unit_test_gate"]
+      }
+    }
   },
   "agents": {
     "ceo": {

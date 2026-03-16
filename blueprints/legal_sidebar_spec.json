@@ -1,0 +1,159 @@
+{
+  "spec_version": "1.0.0",
+  "opportunity_ref": "legal-contract-sidebar",
+  "product": {
+    "name": "ClauseGuard",
+    "tagline": "AI-powered contract review inside Google Docs",
+    "type": "google_workspace_addon",
+    "host_app": "google_docs",
+    "interface": "sidebar"
+  },
+  "problem": "Solo attorneys and small law firms lack affordable, in-editor contract review tooling. Existing platforms (Ironclad, ContractPodAi) are enterprise-priced and require separate workflows. There is no Google Workspace Marketplace add-on that provides clause-level analysis directly inside Google Docs.",
+  "target_users": [
+    "Solo practitioners and boutique law firms (1-20 attorneys)",
+    "Paralegals and legal assistants",
+    "Startup founders reviewing contracts without outside counsel"
+  ],
+  "monetization": {
+    "model": "freemium",
+    "free_tier": {
+      "reviews_per_month": 5,
+      "features": ["clause_extraction", "basic_risk_flags"]
+    },
+    "pro_tier": {
+      "price_per_user_month": 12,
+      "features": ["unlimited_reviews", "template_matching", "export_redlines", "custom_clause_library", "multi_doc_comparison"]
+    }
+  },
+  "architecture": {
+    "runtime": "google_apps_script",
+    "backend": {
+      "platform": "cloud_functions_v2",
+      "language": "node",
+      "node_version": "22"
+    },
+    "ai_engine": {
+      "provider": "gemini",
+      "model": "gemini-2.0-flash",
+      "tasks": ["clause_extraction", "risk_scoring", "template_diff"]
+    },
+    "storage": {
+      "user_prefs": "firestore",
+      "clause_library": "firestore",
+      "billing": "stripe"
+    }
+  },
+  "features": [
+    {
+      "id": "clause-extract",
+      "name": "Clause Extraction",
+      "description": "Parse the active Google Doc and extract individual clauses with section labels, obligation type, and parties involved",
+      "priority": "p0",
+      "tier": "free"
+    },
+    {
+      "id": "risk-flag",
+      "name": "Risk Flagging",
+      "description": "Score each clause for risk (low/medium/high/critical) based on common legal pitfalls: one-sided indemnification, unlimited liability, auto-renewal traps, broad IP assignment",
+      "priority": "p0",
+      "tier": "free"
+    },
+    {
+      "id": "template-match",
+      "name": "Template Matching",
+      "description": "Compare the current contract against user-uploaded template agreements and highlight deviations clause-by-clause",
+      "priority": "p1",
+      "tier": "pro"
+    },
+    {
+      "id": "redline-export",
+      "name": "Redline Export",
+      "description": "Generate a suggested-edits version of the document with flagged clauses replaced by safer alternatives, inserted via the Docs API as suggestions",
+      "priority": "p1",
+      "tier": "pro"
+    },
+    {
+      "id": "clause-library",
+      "name": "Custom Clause Library",
+      "description": "Let users save preferred clause variants and auto-suggest replacements when a risky clause is detected",
+      "priority": "p2",
+      "tier": "pro"
+    },
+    {
+      "id": "multi-doc-compare",
+      "name": "Multi-Document Comparison",
+      "description": "Compare clauses across multiple contracts in Google Drive to identify inconsistencies in terms across deal flow",
+      "priority": "p2",
+      "tier": "pro"
+    }
+  ],
+  "ui_spec": {
+    "sidebar_width": "300px",
+    "sections": [
+      {
+        "id": "scan-panel",
+        "title": "Contract Scan",
+        "components": ["scan_button", "progress_bar", "clause_count_badge"]
+      },
+      {
+        "id": "clause-list",
+        "title": "Clauses",
+        "components": ["clause_card_list", "risk_filter_chips", "sort_dropdown"]
+      },
+      {
+        "id": "detail-panel",
+        "title": "Clause Detail",
+        "components": ["clause_text", "risk_badge", "ai_explanation", "suggested_replacement", "apply_suggestion_button"]
+      },
+      {
+        "id": "library-panel",
+        "title": "Clause Library",
+        "components": ["search_bar", "saved_clause_list", "add_clause_button"],
+        "tier": "pro"
+      }
+    ]
+  },
+  "build_plan": {
+    "phase_1": {
+      "name": "MVP — Clause Extraction + Risk Flags",
+      "features": ["clause-extract", "risk-flag"],
+      "deliverables": [
+        "Apps Script sidebar add-on",
+        "Cloud Function for Gemini clause analysis",
+        "Firestore user model",
+        "Unit tests (>=80% coverage)"
+      ]
+    },
+    "phase_2": {
+      "name": "Pro Features — Templates + Redlines",
+      "features": ["template-match", "redline-export"],
+      "deliverables": [
+        "Template upload + storage",
+        "Clause diff engine",
+        "Docs API suggestion insertion",
+        "Stripe billing integration"
+      ]
+    },
+    "phase_3": {
+      "name": "Scale — Library + Multi-Doc",
+      "features": ["clause-library", "multi-doc-compare"],
+      "deliverables": [
+        "Custom clause CRUD",
+        "Drive file picker integration",
+        "Cross-doc comparison engine",
+        "Marketplace listing submission"
+      ]
+    }
+  },
+  "success_metrics": {
+    "marketplace_installs_month_3": 500,
+    "free_to_pro_conversion_pct": 8,
+    "monthly_recurring_revenue_month_6": 2000,
+    "average_risk_flags_per_doc": 5
+  },
+  "pipeline": {
+    "status": "awaiting_approval",
+    "selected_from": "research/PROPOSAL.json",
+    "next_step": "wait_for_approval → circular_agent_build (phase_1)"
+  }
+}
