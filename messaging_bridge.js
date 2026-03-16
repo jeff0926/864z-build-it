@@ -10,7 +10,23 @@
  *   A2A_URL             — A2A server base URL (default: http://127.0.0.1:3000)
  */
 
-import { readFile } from "node:fs/promises";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+// Load .env file if present (zero-dependency, Node 22+ compatible)
+try {
+  const envPath = resolve(import.meta.dirname, ".env");
+  const lines = readFileSync(envPath, "utf-8").split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    const val = trimmed.slice(eq + 1).trim();
+    if (!process.env[key]) process.env[key] = val;
+  }
+} catch { /* no .env file — use system env */ }
 
 const A2A_BASE = process.env.A2A_URL || "http://127.0.0.1:3000";
 const TG_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "";
