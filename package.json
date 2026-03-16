@@ -2,5 +2,12 @@
   "name": "864zeros-sovereign-os",
   "version": "1.0.0",
   "type": "module",
-  "private": true
+  "private": true,
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
 }
