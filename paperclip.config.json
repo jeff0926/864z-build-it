@@ -1,0 +1,54 @@
+{
+  "name": "864zeros-sovereign-os",
+  "version": "1.0.0",
+  "description": "Business logic and budget orchestrator for 864zeros LLC autonomous build pipeline",
+  "orchestration": {
+    "mode": "autonomous",
+    "build_loop": "circular",
+    "operational_logic": [
+      "identify_gap",
+      "technical_blueprint",
+      "circular_agent_build",
+      "unit_test_gate",
+      "deployment"
+    ]
+  },
+  "agents": {
+    "ceo": {
+      "model": "claude-opus-4-6",
+      "role": "Architectural strategy and logic verification",
+      "permissions": ["approve_blueprint", "verify_logic", "authorize_deploy"]
+    },
+    "worker": {
+      "model": "gemini-3.1",
+      "role": "High-volume code generation and market research",
+      "permissions": ["generate_code", "scan_market", "run_tests"]
+    }
+  },
+  "harness": {
+    "runtime": "nemoclaw",
+    "isolation": true,
+    "communication_protocol": "a2a"
+  },
+  "budget": {
+    "currency": "USD",
+    "max_per_task": 50,
+    "alert_threshold_pct": 80
+  },
+  "asset_types": [
+    "web_app",
+    "micro_saas",
+    "browser_extension",
+    "llm_skill"
+  ],
+  "gates": {
+    "unit_test": {
+      "min_coverage_pct": 80,
+      "required": true
+    },
+    "diagnostic": {
+      "provider": "agent_rx",
+      "catch_critical_failures": true
+    }
+  }
+}

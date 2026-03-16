@@ -1,0 +1,50 @@
+{
+  "name": "agent-rx-diagnostic-policy",
+  "version": "1.0.0",
+  "description": "AgentRx (Microsoft) diagnostic layer policy for catching Critical Failure Steps",
+  "provider": "microsoft-agent-rx",
+  "enabled": true,
+  "diagnostics": {
+    "level": "mandatory",
+    "scan_on": ["build_start", "test_gate", "pre_deploy"],
+    "critical_failure_detection": {
+      "enabled": true,
+      "halt_on_critical": true,
+      "notify": ["ceo_agent"]
+    }
+  },
+  "rules": [
+    {
+      "id": "RX-001",
+      "name": "infinite_loop_guard",
+      "description": "Detect and halt circular build loops that exceed max iterations",
+      "max_iterations": 10,
+      "action": "halt_and_report"
+    },
+    {
+      "id": "RX-002",
+      "name": "budget_overrun_guard",
+      "description": "Halt execution if task budget threshold is exceeded",
+      "action": "halt_and_escalate"
+    },
+    {
+      "id": "RX-003",
+      "name": "test_coverage_guard",
+      "description": "Block deployment if unit test coverage falls below minimum",
+      "min_coverage_pct": 80,
+      "action": "block_deploy"
+    },
+    {
+      "id": "RX-004",
+      "name": "security_scan",
+      "description": "Run security analysis before deployment",
+      "scan_targets": ["dependencies", "secrets", "injection_vectors"],
+      "action": "block_on_critical"
+    }
+  ],
+  "reporting": {
+    "format": "json",
+    "destination": "diagnostics/",
+    "retain_days": 30
+  }
+}
